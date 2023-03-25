@@ -9,6 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -19,7 +20,9 @@ public class EmployerController {
     private EmployerRepository employerRepository;
     @RequestMapping("")
     public String index(Model model) {
-            model.addAttribute( "employers", employerRepository.findAll());
+        model.addAttribute("title", "All Employers");
+        List employers = (List<Employer>) employerRepository.findAll();
+        model.addAttribute( "employers", employers);
        return "employers/index";
     }
     @GetMapping("add")
@@ -33,6 +36,7 @@ public class EmployerController {
                                     Errors errors, Model model) {
 
         if (errors.hasErrors()) {
+            model.addAttribute("title", "Add Employer");
             return "employers/add";
         }
         //Controllers#3
@@ -43,7 +47,7 @@ public class EmployerController {
     @GetMapping("view/{employerId}")
     public String displayViewEmployer(Model model, @PathVariable int employerId) {
 
-        Optional optEmployer = employerRepository.findById(employerId);//null;
+        Optional<Employer> optEmployer = employerRepository.findById(employerId);
         if (optEmployer.isPresent()) {
             Employer employer = (Employer) optEmployer.get();
             model.addAttribute("employer", employerId);
