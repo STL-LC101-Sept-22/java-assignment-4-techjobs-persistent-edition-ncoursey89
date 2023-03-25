@@ -17,9 +17,9 @@ import java.util.Optional;
 public class EmployerController {
     @Autowired
     private EmployerRepository employerRepository;
-    @GetMapping
+    @RequestMapping("")
     public String index(Model model) {
-        model.addAttribute("name", employerRepository.findAll());
+            model.addAttribute( "employers", employerRepository.findAll());
        return "employers/index";
     }
     @GetMapping("add")
@@ -29,14 +29,14 @@ public class EmployerController {
     }
 // Contollers #3
     @PostMapping("add")
-    public String processAddEmployerForm(@ModelAttribute @Valid Employer newEmployer,
+    public String processAddEmployerForm(@ModelAttribute @Valid Employer employer,
                                     Errors errors, Model model) {
 
         if (errors.hasErrors()) {
             return "employers/add";
         }
         //Controllers#3
-        employerRepository.save(newEmployer);
+        employerRepository.save(employer);
         return "redirect:";
     }
 //Controllers #4 - displayViewEmployer will be in charge of rendering a page to view the contents of an individual employer object. It will make use of the employer object's id field to grab the correct information from employerRepository. optEmployer is currently initialized to null.
@@ -46,7 +46,7 @@ public class EmployerController {
         Optional optEmployer = employerRepository.findById(employerId);//null;
         if (optEmployer.isPresent()) {
             Employer employer = (Employer) optEmployer.get();
-            model.addAttribute("employer", employer);
+            model.addAttribute("employer", employerId);
             return "employers/view";
         } else {
             return "redirect:../";
